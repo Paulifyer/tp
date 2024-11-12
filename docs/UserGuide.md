@@ -221,7 +221,7 @@ quit
 | View all flashcards in a module without the answers | ```flashbang --m [MODULE NAME]```                                                |
 | Filter flashcards by module                         | ```view --m [MODULE NAME]```                                                     |
 | Edit flashcard                                      | ```edit --m [MODULE NAME] --i [INDEX] --q [NEW QUESTION] --a [NEW ANSWER]```     |
-| Search flashcards 				      | ```search --m [MODULE NAME] {/t (optional} --s [SEARCH TERM]                     |
+| Search flashcards 				      | ```search --m [MODULE NAME] {/t (optional} --s [SEARCH TERM]```                     |
 | Quit the app                                        | ```quit```                                                                       |
 
 Note that specifying multiple command keywords in the input will be understood as command of the first type.

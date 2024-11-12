@@ -175,18 +175,28 @@ public class Parser {
     }
 
     public static Command createViewCommand(String input) {
-        Pattern viewModulePattern = Pattern.compile("--m\\s+(.+)");
-        Matcher matcher = viewModulePattern.matcher(input);
-        Pattern viewAllModulePattern = Pattern.compile("--all");
-        Matcher matcherAll = viewAllModulePattern.matcher(input);
-        if (matcher.find()) {
-            String moduleName = matcher.group(1);
-            FlashCardSet module = FlashBook.getInstance().getFlashCardSet(moduleName);
-            return new ViewCommand(module);
-        } else if (matcherAll.find()) {
-            return new ViewAllCommand();
-        } else {
-            return new InvalidCommand();
+        try {
+            Pattern viewModulePattern = Pattern.compile("--m\\s+(.+)");
+            Matcher matcher = viewModulePattern.matcher(input);
+            Pattern viewAllModulePattern = Pattern.compile("--all");
+            Matcher matcherAll = viewAllModulePattern.matcher(input);
+            if (matcher.find()) {
+                String moduleName = matcher.group(1);
+
+                if (!FlashBook.getInstance().flashCardSetExists(moduleName)) {
+                    throw new FlashCardSetDoesNotExistException();
+                }
+
+                FlashCardSet module = FlashBook.getInstance().getFlashCardSet(moduleName);
+                return new ViewCommand(module);
+            } else if (matcherAll.find()) {
+                return new ViewAllCommand();
+            } else {
+                return new InvalidCommand();
+            }
+
+        } catch (FlashCardSetDoesNotExistException e) {
+            return new InvalidCommand("No such module exists");
         }
     }
 
@@ -212,16 +222,25 @@ public class Parser {
         }
     }
     public static Command createSearchCommand(String input) {
-        Pattern searchPattern = Pattern.compile("--m\\s+(.+?)(?:\\s+(/t))?\\s+--s\\s+(.+)");
-        Matcher searchMatcher = searchPattern.matcher(input);
-        if (searchMatcher.find()) {
-            String module = searchMatcher.group(1);
-            boolean byTopic = searchMatcher.group(2) != null && searchMatcher.group(2).equals("/t");
-            String searchTerm = searchMatcher.group(3);
-            assert (!(module == null || searchTerm == null));
-            return new SearchCommand(searchTerm, byTopic, FlashBook.getInstance().getFlashCardSet(module));
-        } else {
-            return new InvalidCommand("Invalid format for search =.=");
+        try {
+            Pattern searchPattern = Pattern.compile("--m\\s+(.+?)(?:\\s+(/t))?\\s+--s\\s+(.+)");
+            Matcher searchMatcher = searchPattern.matcher(input);
+            if (searchMatcher.find()) {
+                String module = searchMatcher.group(1);
+
+                if (!FlashBook.getInstance().flashCardSetExists(module)) {
+                    throw new FlashCardSetDoesNotExistException();
+                }
+
+                boolean byTopic = searchMatcher.group(2) != null && searchMatcher.group(2).equals("/t");
+                String searchTerm = searchMatcher.group(3);
+                assert (!(module == null || searchTerm == null));
+                return new SearchCommand(searchTerm, byTopic, FlashBook.getInstance().getFlashCardSet(module));
+            } else {
+                return new InvalidCommand("Invalid format for search =.=");
+            }
+        } catch (FlashCardSetDoesNotExistException e) {
+            return new InvalidCommand("No such module exists");
         }
     }
 
