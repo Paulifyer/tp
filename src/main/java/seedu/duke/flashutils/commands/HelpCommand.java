@@ -12,7 +12,7 @@ public class HelpCommand extends Command {
                 + " \t view --all\n"
                 + " 4. Delete a flashcard: \n"
                 + " \t delete --m [Module Name] --i [Index] \n"
-                + " \t delete --m [Module Name]"
+                + " \t delete --m [Module Name] \n"
                 + " 5. Edit a flashcard: \n"
                 + " \t edit --m [Module Name] --i [Index] --q [New Question] --a [New Answer] \n"
                 + " 6. Flashbang - view all the flashcards of a module without seeing the answers: \n"
